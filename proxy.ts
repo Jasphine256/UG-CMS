@@ -50,7 +50,7 @@ export default async function proxy(request: NextRequest) {
         });
 
         if (user && user.status === "ACTIVE") {
-          const roleSlugs = user.roles.map((ur) => ur.role.slug);
+          const roleSlugs = user.roles.map((ur: { role: { slug: string } }) => ur.role.slug);
           const newAccessToken = signAccessToken({
             userId: user.id,
             email: user.email,
