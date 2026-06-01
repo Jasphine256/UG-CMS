@@ -1,5 +1,15 @@
 import { prisma } from "@/lib/prisma/client";
-import type { PermissionAction, ResourceType } from "@prisma/client";
+import type { PermissionAction, ResourceType, Role } from "@prisma/client";
+
+export interface UserRoleWithRole {
+  id: string;
+  userId: string;
+  roleId: string;
+  courtId: string | null;
+  assignedAt: Date;
+  role: Role;
+  court: { id: string; name: string; code: string } | null;
+}
 
 interface PermissionCheckContext {
   courtId?: string;
@@ -53,7 +63,7 @@ export async function requirePermission(
   }
 }
 
-export async function getUserRoles(userId: string) {
+export async function getUserRoles(userId: string): Promise<UserRoleWithRole[]> {
   return prisma.userRole.findMany({
     where: { userId },
     include: {
