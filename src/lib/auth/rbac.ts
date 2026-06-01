@@ -36,14 +36,14 @@ export async function checkPermission(
 
   // Check if user has admin role (system-wide)
   const hasAdmin = userRoles.some(
-    (ur) => ur.role.slug === "system_administrator" && !ur.courtId
+    (ur: { role: { slug: string }; courtId: string | null }) => ur.role.slug === "system_administrator" && !ur.courtId
   );
   if (hasAdmin) return true;
 
   // Check specific permission
-  return userRoles.some((ur) =>
+  return userRoles.some((ur: { role: { permissions: { permission: { resource: string; action: string } }[] } }) =>
     ur.role.permissions.some(
-      (rp) =>
+      (rp: { permission: { resource: string; action: string } }) =>
         rp.permission.resource === resource &&
         rp.permission.action === action
     )
