@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma/client";
-import type { PermissionAction, ResourceType, Role } from "@prisma/client";
 
 export interface UserRoleWithRole {
   id: string;
@@ -7,7 +6,7 @@ export interface UserRoleWithRole {
   roleId: string;
   courtId: string | null;
   assignedAt: Date;
-  role: Role;
+  role: { id: string; name: string; slug: string; description: string | null; hierarchy: number; isSystem: boolean; createdAt: Date; updatedAt: Date };
   court: { id: string; name: string; code: string } | null;
 }
 
@@ -18,8 +17,8 @@ interface PermissionCheckContext {
 
 export async function checkPermission(
   userId: string,
-  resource: ResourceType,
-  action: PermissionAction,
+  resource: string,
+  action: string,
   context?: PermissionCheckContext,
 ): Promise<boolean> {
   // Admin always has full access
@@ -53,8 +52,8 @@ export async function checkPermission(
 
 export async function requirePermission(
   userId: string,
-  resource: ResourceType,
-  action: PermissionAction,
+  resource: string,
+  action: string,
   context?: PermissionCheckContext,
 ): Promise<void> {
   const allowed = await checkPermission(userId, resource, action, context);

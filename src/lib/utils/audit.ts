@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/prisma/client";
-import type { ResourceType, PermissionAction } from "@prisma/client";
 
 export async function logAudit(
   userId: string | null,
   action: string,
-  resource: ResourceType,
+  resource: string,
   resourceId: string | null,
   opts?: { oldValue?: unknown; newValue?: unknown; metadata?: unknown },
 ) {
@@ -12,7 +11,7 @@ export async function logAudit(
     data: {
       userId,
       action,
-      resource,
+      resource: resource as never,
       resourceId,
       oldValue: opts?.oldValue ? (JSON.parse(JSON.stringify(opts.oldValue))) : undefined,
       newValue: opts?.newValue ? (JSON.parse(JSON.stringify(opts.newValue))) : undefined,

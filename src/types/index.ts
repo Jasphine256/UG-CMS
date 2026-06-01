@@ -1,4 +1,22 @@
-import type { User, Case, Court, Role } from "@prisma/client";
+export interface User {
+  id: string;
+  email: string;
+  passwordHash: string;
+  firstName: string;
+  lastName: string;
+  otherNames?: string | null;
+  phoneNumber?: string | null;
+  nationalId?: string | null;
+  barNumber?: string | null;
+  badgeNumber?: string | null;
+  jobTitle?: string | null;
+  status: string;
+  isVerified: boolean;
+  lastLoginAt?: string | null;
+  avatarUrl?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export type SafeUser = Omit<User, "passwordHash">;
 
@@ -21,12 +39,26 @@ export interface ApiResponse<T = unknown> {
   };
 }
 
-export interface CaseWithRelations extends Case {
+export interface CaseWithRelations {
+  id: string;
+  caseNumber: string;
+  caseType: string;
+  caseStatus: string;
+  title: string;
+  description?: string | null;
+  filingDate: string;
+  courtId: string;
+  assignedJudgeId?: string | null;
+  createdById: string;
+  isSensitive: boolean;
+  caseFee?: number | null;
+  createdAt: string;
+  updatedAt: string;
   criminalDetails?: unknown;
   civilDetails?: unknown;
   parties?: unknown[];
   assignedJudge?: SafeUser;
-  court?: Court;
+  court?: { id: string; name: string; code: string; level: string };
 }
 
 export interface NavItem {
@@ -36,5 +68,3 @@ export interface NavItem {
   roles: string[];
   children?: NavItem[];
 }
-
-export type { PermissionAction, ResourceType, CaseType, CaseStatus, CourtLevel, HearingType, PartyType } from "@prisma/client";
