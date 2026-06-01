@@ -16,7 +16,11 @@ export async function GET() {
     },
   });
 
-  const data = judges.map(j => {
+  const data = judges.map((j: {
+    id: string; firstName: string; lastName: string;
+    _count: { assignedCases: number };
+    assignedCases: { caseStatus: string }[];
+  }) => {
     const closed = j.assignedCases.filter(c => ["CLOSED","DISMISSED","JUDGMENT_DELIVERED"].includes(c.caseStatus)).length;
     return { id:j.id, name:`${j.firstName} ${j.lastName}`, totalCases:j._count.assignedCases, closed, pending: j._count.assignedCases-closed, dispositionRate: j._count.assignedCases>0 ? Math.round((closed/j._count.assignedCases)*100) : 0 };
   });

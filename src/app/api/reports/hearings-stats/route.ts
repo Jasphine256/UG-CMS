@@ -18,6 +18,6 @@ export async function GET() {
   return apiSuccess({
     total, adjourned, withOutcome,
     adjournmentRate: total>0 ? Math.round((adjourned/total)*100) : 0,
-    byType: byType.map(i => ({ type: i.hearingType, count: i._count })),
+    byType: byType.map((i: { hearingType: string; _count: number }) => ({ type: i.hearingType, count: i._count })),
   });
 }

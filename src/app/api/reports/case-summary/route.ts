@@ -19,7 +19,7 @@ export async function GET() {
 
   return apiSuccess({
     total,
-    byType: byType.map(i => ({ type: i.caseType, label: typeMap[i.caseType] || i.caseType, count: i._count })),
-    byStatus: byStatus.map(i => ({ status: i.caseStatus, label: statusMap[i.caseStatus] || i.caseStatus, count: i._count })),
+    byType: byType.map((i: { caseType: string; _count: number }) => ({ type: i.caseType, label: typeMap[i.caseType] || i.caseType, count: i._count })),
+    byStatus: byStatus.map((i: { caseStatus: string; _count: number }) => ({ status: i.caseStatus, label: statusMap[i.caseStatus] || i.caseStatus, count: i._count })),
   });
 }
