@@ -19,5 +19,5 @@ export async function GET() {
     return { id:c.id, name:c.name, code:c.code, total, active, closed, hearings, clearanceRate: closed+active>0 ? Math.round((closed/(closed+active))*100) : 0 };
   }));
 
-  return apiSuccess(data.filter(c => c.total > 0));
+  return apiSuccess(data.filter((c: { total: number }) => c.total > 0));
 }
