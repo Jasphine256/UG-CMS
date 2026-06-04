@@ -14,7 +14,8 @@
     "db:seed": "prisma db seed",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
-    "setup": "bun run docker:up && bunx prisma generate && bunx prisma db push && bun run db:seed"
+    "setup": "bun run docker:up && bunx prisma generate && bunx prisma db push && bun run db:seed",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "bun prisma/seed.ts"
