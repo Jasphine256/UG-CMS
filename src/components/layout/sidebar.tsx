@@ -8,9 +8,10 @@ import {
   LayoutDashboard, FolderOpen, PlusCircle, Calendar, Search,
   FileSearch, Handshake, Scale, Building2, Landmark, Users,
   Shield, FileText, BarChart3, History, Settings, Bell,
-  ChevronDown, ChevronLeft, Gavel,
+  ChevronDown, ChevronLeft, Gavel, LogOut,
 } from "lucide-react";
 import { navigation } from "@/config/navigation";
+import { useAuth } from "@/providers/auth-provider";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard, FolderOpen, PlusCircle, Calendar, Search,
@@ -20,10 +21,13 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
     new Set(navigation.map((g) => g.title)),
   );
+
+  const userRoles = user?.roles ?? [];
 
   function toggleGroup(title: string) {
     setExpandedGroups((prev) => {
@@ -33,6 +37,16 @@ export function Sidebar() {
       return next;
     });
   }
+
+  // Filter groups and items by user roles
+  const visibleNavigation = navigation
+    .map((group) => ({
+      ...group,
+      items: group.items.filter(
+        (item) => !item.roles || item.roles.some((r) => userRoles.includes(r)),
+      ),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <aside
@@ -57,7 +71,7 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-2 py-4">
-        {navigation.map((group) => (
+        {visibleNavigation.map((group) => (
           <div key={group.title} className="mb-4">
             {!collapsed && (
               <button
@@ -98,8 +112,30 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* Collapse button */}
-      <div className="border-t border-white/10 p-2">
+      {/* Bottom actions */}
+      <div className="border-t border-white/10 p-2 space-y-1">
+        {/* User info (compact) */}
+        {user && (
+          <div className={cn("flex items-center gap-2 rounded-lg px-2 py-1.5", collapsed && "justify-center")}>
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-600 text-xs font-semibold text-white">
+              {user.firstName[0]}{user.lastName[0]}
+            </div>
+            {!collapsed && (
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-xs font-medium text-slate-300">{user.firstName} {user.lastName}</p>
+                <p className="truncate text-[10px] text-slate-500">{user.email}</p>
+              </div>
+            )}
+          </div>
+        )}
+        <button
+          onClick={logout}
+          className="flex w-full items-center gap-2 rounded-lg p-2 text-sm text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+          title="Sign out"
+        >
+          <LogOut className="h-4 w-4 shrink-0" />
+          {!collapsed && <span>Sign out</span>}
+        </button>
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="flex w-full items-center justify-center rounded-lg p-2 text-slate-500 hover:bg-card/5 hover:text-white"
